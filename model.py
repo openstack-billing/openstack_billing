@@ -104,5 +104,13 @@ def billing_get_estimate_url(tenant_key):
     return options['billing_url'] + "?action=estimate"
 
 
+_rs_tenant_keys_cache = {}
 def billing_get_top_iframe_url(tenant_key):
-    return settings.TOP_IFRAME_URL  # TODO
+    if tenant_key not in _rs_tenant_keys_cache:
+        tenant = tenant_get(tenant_key)
+        try:
+            tenant_get_options(tenant)
+            _rs_tenant_keys_cache[tenant_key] = True
+        except Exception:
+            _rs_tenant_keys_cache[tenant_key] = False
+    return settings.TOP_IFRAME_URL if _rs_tenant_keys_cache[tenant_key] else ""
