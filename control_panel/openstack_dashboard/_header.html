@@ -1,0 +1,11 @@
+{% load i18n %}
+{% load rs_tags %}
+<div id="user_info" class="pull-right">
+
+  <iframe scrolling="no" height="30" frameborder="no"
+   style="float:left; border:0; padding:0; margin:0; width: 560px; background: transparent;"
+   src="{% rs_top_iframe_url %}" id="top_menu"></iframe>
+
+  {% include "horizon/common/_region_selector.html" %}
+
+</div>

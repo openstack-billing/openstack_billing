@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-09-20 01:32-0700\n"
+"Language-Team: RentSoft\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: .\control_panel\openstack_dashboard\__init__.py:30
+msgid "rs_insufficient_funds_please_fill_s_s"
+msgstr ""
+"Not enough funds for this operation. Services cost: %s. Please <a class="
+"\"rs_refill_link\" target=\"_blank\" href=\"%s\">refill your account</a>."
+
+#: .\control_panel\openstack_dashboard\_estimate_generic.html.py:4
+#: .\control_panel\openstack_dashboard\_estimate_volume.html.py:3
+msgid "rs_estimated_cost"
+msgstr "Estimated Cost"
+
+#: .\control_panel\openstack_dashboard\_estimate_generic.html.py:30
+msgid "rs_total_cost"
+msgstr "Total Cost:"
+
+#: .\control_panel\openstack_dashboard\_success_payment.html.py:7
+msgid "rs_success_payment_alert"
+msgstr ""
+"Your account has been refilled.\n"
+"Please try to submit the request again."

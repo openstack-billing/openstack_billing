@@ -1,0 +1,36 @@
+{% load i18n %}
+<div class="rs_estimation">
+    {% include "_estimate_css.html" %}
+    {% block rs_est_header %}<h4>{% trans "rs_estimated_cost" %}</h4>{% endblock %}
+    <table class="flavor_table table-striped">
+    {% for charge in charges %}
+        <tr>
+            <td class="flavor_name">
+                {% for caption in charge.captions %}<div class="rs_caption">{{ caption }}</div>{% endfor %}
+            </td>
+            <td class="rs_count_x">
+                {% if charge.count > 1 %}
+                    {{ charge.count }} &#10799;
+                {% else %}
+                    <span style="visibility: hidden">1 &#10799;</span>
+                {% endif %}
+            </td>
+            <td class="rs_price_text">
+                {% if charge.subscription %}
+                    {{ charge.subscription.price_text }}
+                {% else %}
+                   {{ charge.amount_text }}
+                {% endif %}
+                {% if charge.action %}<div class="rs_action">{{ charge.action }}</div>{% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    {% if not has_usage_based_charges %}
+        <tr>
+            <td class="flavor_name">{% trans "rs_total_cost" %}</td>
+            <td></td>
+            <td><span>{{ total_amount_text }}</span></td>
+        </tr>
+    {% endif %}
+    </table>
+</div>

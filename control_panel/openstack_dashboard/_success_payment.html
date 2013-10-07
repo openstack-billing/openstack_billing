@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load rs_tags %}
+<!DOCTYPE html>
+<script type="text/javascript">
+// We use alert() in the parent window, because it seems to
+// be the only way to return the focus back to parent, at
+// least in Firefox. Yes, window.opener.focus() does not work.
+try {
+    window.opener.setTimeout(window.opener.Function('alert("{% trans "rs_success_payment_alert"|escapejs|escapejs %}"); $("form input:submit:first").focus()'), 1);
+    window.close();
+} catch (e) {
+    location = "{% rs_full_root_url %}"
+}
+</script>

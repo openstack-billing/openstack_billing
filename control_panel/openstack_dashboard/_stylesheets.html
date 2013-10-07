@@ -1,0 +1,93 @@
+{% load compress %}
+
+{% comment %} Extend openstack_dashboard's stylesheets. {% endcomment %}
+{% include "templates/_stylesheets.html" %}
+
+
+<style type="text/css">
+#tenant_switcher {
+    height: 1px;
+}
+#tenant_switcher * {
+    display: none;
+}
+.sidebar h4 {
+    margin-left: 12px;
+}
+.rs_loading {
+    background: url(/static/dashboard/img/loading.gif) no-repeat;
+    width: 35px;
+    height: 21px;
+}
+.rs_refill_link {
+    color: #00b;
+    white-space: nowrap;
+    font-weight: bold;
+}
+</style>
+
+
+<script type="text/javascript">
+(function() {
+    var ESTIMATE_AJAX_URL = '{% url "rs_estimate_ajax" %}';
+    var FORM_ACTIONS = {
+        '{% url "horizon:project:instances:launch" %}': {
+            resource: 'instance',
+            showEstimation: function($form, $html) {
+                $form.find('div.quota-dynamic').before($html);
+            }
+        },
+        '{% url "horizon:project:volumes:create" %}': {
+            resource: 'volume',
+            showEstimation: function($form, $html) {
+                $form.find('div.quota-dynamic').append($html);
+            }
+        }
+
+    };
+
+    function addAsyncAspect(obj, methodName, callback, dt) {
+        var oldMethod = obj[methodName];
+        var timeout = null;
+        obj[methodName] = function() {
+            var that = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                callback.apply(that, args);
+            }, dt || 1);
+            return oldMethod.apply(that, args);
+        }
+    }
+
+    function rsInit() {
+        var ajaxHandler = null;
+        var onUpdate = function(e) {
+            var innerElement = (typeof e == "string" || e instanceof String)? $('#' + e) : e;
+            var $form = $(innerElement).closest('form');
+            var action = $form.attr('action').replace(/\?.*/, '');
+            var info = FORM_ACTIONS[action];
+            if (info) {
+                if (ajaxHandler) ajaxHandler.abort();
+                $form.find('.rs_estimation').remove();
+                info.showEstimation($form, $('<div class="rs_loading rs_estimation"/>'));
+                ajaxHandler = $.post(
+                    ESTIMATE_AJAX_URL + '?resource=' + info.resource,
+                    $form.serializeArray(),
+                    function(html) {
+                        $form.find('.rs_estimation').remove();
+                        var $elt = $($.trim(html)).addClass("rs_estimation");
+                        info.showEstimation($form, $elt);
+                    }
+                );
+            }
+        };
+        addAsyncAspect(horizon.Quota, 'update', onUpdate);
+        $(document).on('change', '.workflow select', function() {
+            onUpdate(this);
+        });
+    }
+
+    if (document.addEventListener) document.addEventListener("DOMContentLoaded", rsInit);
+    else document.attachEvent("onreadystatechange", rsInit);
+})();
+</script>
