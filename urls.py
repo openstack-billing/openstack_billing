@@ -8,7 +8,7 @@ urlpatterns = patterns(
     '',
     url(r'^provisioning_api/?$', csrf_exempt(handlers.provisioning_api_handler)),
     url(r'^sso_api/?$', csrf_exempt(handlers.sso_api_handler)),
-    url(r'^sso_api/login/?$', csrf_exempt(handlers.sso_api_login_handler), name='sso_api_login'),
+    url(r'^sso_api/login/(?P<mark>\w+)/?$', csrf_exempt(handlers.sso_api_login_handler), name='sso_api_login'),
     url(r'^usage_api/?$', csrf_exempt(handlers.usage_api_handler)),
     url(r'^estimate_ajax/?$', handlers.estimate_ajax_handler, name='rs_estimate_ajax'),
     url(r'^success_payment/?$', handlers.success_payment_handler, name='rs_success_payment'),

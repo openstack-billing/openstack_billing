@@ -33,9 +33,9 @@ def api_handler_decorator(handler):
 
 
 def web_handler_decorator(handler):
-    def wrapper(request):
+    def wrapper(request, *args, **kwargs):
         try:
-            return handler(request)
+            return handler(request, *args, **kwargs)
         except:
             return HttpResponse("Error: " + _format_exception(), content_type="text/plain", status=500)
     return wrapper
@@ -60,17 +60,16 @@ def sso_api_handler(request):
     tenant_key = params['tenant_key']
     payload = params['payload'] if 'payload' in params else None
     args = dict()
-    args["mark"] = api.tenant_sso_get_mark(tenant_key)
+    mark = api.tenant_sso_get_mark(tenant_key)
     if payload is not None:
         args["payload"] = payload
-    url = request.build_absolute_uri(reverse('sso_api_login') + "?" + urllib.urlencode(args))
+    url = request.build_absolute_uri(reverse('sso_api_login', args=[mark]) + "?" + urllib.urlencode(args))
     return url
 
 
 @web_handler_decorator
-def sso_api_login_handler(request):
+def sso_api_login_handler(request, mark):
     params = request.REQUEST
-    mark = params['mark']
     cookies = api.tenant_sso_login_by_mark(request, mark)
     payload = params['payload'] if 'payload' in params else get_control_panel_module().get_user_home_url(request.user)
     response = HttpResponseRedirect(payload)
