@@ -43,6 +43,7 @@ def usage_fetch(stamp_start, stamp_end):
     for v in meter_set.get_selectors():
         selectors[v] = 1
     cursor = db.meter.find({"timestamp": tsquery}, selectors)
+    db.meter.ensure_index([("timestamp", 1), ("_id", 1)])
     cursor = cursor.sort([("timestamp", 1), ("_id", 1)])  # because _id in mongo has timestamp at its front
 
     # ATTENTION! We do not use cursor.limit() here, because we do not know it
