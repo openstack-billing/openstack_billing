@@ -2,8 +2,6 @@ import horizon
 from ..abstract import *  # extend module
 from ... import api
 from ... import model
-from openstack_dashboard.dashboards.project.instances.workflows.create_instance import SetInstanceDetailsAction
-from openstack_dashboard.dashboards.project.volumes.forms import CreateForm as InstanceCreateForm
 from openstack_dashboard import views
 from horizon import forms
 from django.utils.translation import ugettext_lazy as _
@@ -64,8 +62,8 @@ def init_hooks():
             return old_clean(self)
         old_clean = form_class.clean
         form_class.clean = new_clean
-    assign_clean_method(SetInstanceDetailsAction, 'instance')
-    assign_clean_method(InstanceCreateForm, 'volume')
+    for k, v in init_hooks.forms_to_validate().items():
+        assign_clean_method(v, k)
 
     # Floating IP link & form hook.
     def tenant_floating_ip_allocate(request, pool=None):
@@ -82,3 +80,13 @@ def init_hooks():
 
     # Login form is replaced by SSO renewal redirect.
     views.splash = api.tenant_sso_login_view_decorator(views.splash)
+
+def forms_to_validate():
+    from openstack_dashboard.dashboards.project.instances.workflows.create_instance import SetInstanceDetailsAction
+    from openstack_dashboard.dashboards.project.volumes.forms import CreateForm as InstanceCreateForm
+    return {
+        'instance': SetInstanceDetailsAction,
+        'volume': InstanceCreateForm
+    }
+
+init_hooks.forms_to_validate = forms_to_validate

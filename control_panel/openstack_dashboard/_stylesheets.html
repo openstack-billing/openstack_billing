@@ -26,26 +26,10 @@
 }
 </style>
 
-
+{% include "_js_estimate_actions.html" %}
 <script type="text/javascript">
 (function() {
     var ESTIMATE_AJAX_URL = '{% url "rs_estimate_ajax" %}';
-    var FORM_ACTIONS = {
-        '{% url "horizon:project:instances:launch" %}': {
-            resource: 'instance',
-            showEstimation: function($form, $html) {
-                $form.find('div.quota-dynamic').before($html);
-            }
-        },
-        '{% url "horizon:project:volumes:create" %}': {
-            resource: 'volume',
-            showEstimation: function($form, $html) {
-                $form.find('div.quota-dynamic').append($html);
-            }
-        }
-
-    };
-
     function addAsyncAspect(obj, methodName, callback, dt) {
         var oldMethod = obj[methodName];
         var timeout = null;
@@ -65,7 +49,7 @@
             var innerElement = (typeof e == "string" || e instanceof String)? $('#' + e) : e;
             var $form = $(innerElement).closest('form');
             var action = $form.attr('action').replace(/\?.*/, '');
-            var info = FORM_ACTIONS[action];
+            var info = OPENSTACK_BILLING.estimate_actions[action];
             if (info) {
                 if (ajaxHandler) ajaxHandler.abort();
                 $form.find('.rs_estimation').remove();

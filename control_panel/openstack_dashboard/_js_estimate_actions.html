@@ -1,0 +1,17 @@
+<script type="text/javascript">
+    var OPENSTACK_BILLING = {};
+    OPENSTACK_BILLING.estimate_actions = {
+        '{% url "horizon:project:instances:launch" %}': {
+            resource: 'instance',
+            showEstimation: function($form, $html) {
+                $form.find('div.quota-dynamic').before($html);
+            }
+        },
+        '{% url "horizon:project:volumes:create" %}': {
+            resource: 'volume',
+            showEstimation: function($form, $html) {
+                $form.find('div.quota-dynamic').append($html);
+            }
+        }
+    };
+</script>

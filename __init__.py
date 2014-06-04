@@ -28,14 +28,18 @@ def django_install_hooks(caller_module_name):
     caller = sys.modules[caller_module_name]
 
     if hasattr(caller, "TEMPLATE_DIRS"):
+        # Build path manually, do not use get_control_panel_module() here
+        # because it initializes lots of libraries. These libraries may expect
+        # settings.py already filled, but we are in the middle of settings.py
+        # now with this hook...
+        panels_dir = dirname(abspath(__file__)) + "/control_panel"
+        cur_panel_dir = panels_dir + "/" + settings.CONTROL_PANEL
         caller.TEMPLATE_DIRS = (
             # Inject parent's ROOT_PATH to access parent templates.
             dirname(abspath(caller.__file__)),
-            # Build path manually, do not use get_control_panel_module() here
-            # because it initializes lots of libraries. These libraries may expect
-            # settings.py already filled, but we are in the middle of settings.py
-            # now with this hook...
-            dirname(abspath(__file__)) + "/control_panel/" + settings.CONTROL_PANEL
+            # Inject path to other panels to allow template inheritance
+            panels_dir,
+            cur_panel_dir
         ) + caller.TEMPLATE_DIRS
 
     if hasattr(caller, "INSTALLED_APPS"):
