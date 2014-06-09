@@ -28,7 +28,7 @@ Installation
    settings.BILLING_APP.django_install_hooks(__name__)
    ```
 
-4. Configure options in /etc/openstack_billing/local_settings file:
+4. Configure options in `/etc/openstack_billing/local_settings`:
 
    ```python
    SECRET = "secret_string_to_control_access_to_api_endpoints"
