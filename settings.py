@@ -3,16 +3,17 @@ SECRET = None
 KEYSTONE_AUTH_URL = None
 KEYSTONE_ADMIN_PASSWORD = None
 TOP_IFRAME_URL = None  # TODO: deduce from billing_url etc.
+CONTROL_PANEL = "openstack_dashboard"  # TODO: try to deduce
 
 # May not be overriden:
 APP_RELOADER = True
-CONTROL_PANEL = "openstack_dashboard"  # TODO: try to deduce
 KEYSTONE_ADMIN_USER = "admin"
 CEILOMETER_DSN = None
 MARK_STORAGE_FILE = "/tmp/openstack_billing_tmp_storage"
 MARK_STORAGE_LIFETIME = 60
 USAGE_API_LIMIT_FETCH_TIME = 10
 USAGE_API_CHUNK_SIZE = 1000
+USAGE_RESOURCE_MAX_INACTIVITY = 600 * 2 + 100  # two ceilometer polls plus minor timeout
 ESTIMATION_TIMEOUT = 10
 ESTIMATION_MAX_SUB_VOLUME = 100
 ESTIMATION_DEFAULT_CPU_VOLUME = 3600
