@@ -52,16 +52,19 @@ def tenant_sso_login_by_mark(request, mark):
         raise sso.SsoException("Cannot find a user with username %s and tenant_id %s" % (tenant_key, tenant.id))
     tmp_pass = model.get_rnd_pass()
     model.user_update(user, password=tmp_pass)
-    get_control_panel_module().authenticate(
+    # Don't throw for failed auth, just return all available information and success flag
+    success = get_control_panel_module().authenticate(
         request=request,
         username=user.name,
         password=tmp_pass,
     )
     options = model.tenant_get_options(tenant)
-    return {
+    result = {
         "rs_billing_url": options["billing_url"],
         "rs_last_tenant_key": tenant_key,
     } if "billing_url" in options else {}
+    result["auth_success"] = success
+    return result
 
 
 def tenant_sso_login_view_decorator(orig_login_view):

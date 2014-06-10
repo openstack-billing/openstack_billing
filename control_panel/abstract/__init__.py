@@ -1,4 +1,5 @@
 import django.contrib.auth
+from openstack_auth.exceptions import KeystoneAuthException
 import openstack_auth.user
 import django.conf
 import re
@@ -6,14 +7,18 @@ from ... import usage
 
 
 def authenticate(request, username, password):
-    user = django.contrib.auth.authenticate(
-        request=request,
-        username=username,
-        password=password,
-        auth_url=django.conf.settings.OPENSTACK_KEYSTONE_URL,
-    )
+    try:
+        user = django.contrib.auth.authenticate(
+            request=request,
+            username=username,
+            password=password,
+            auth_url=django.conf.settings.OPENSTACK_KEYSTONE_URL,
+        )
+    except KeystoneAuthException as e:
+        return False
     django.contrib.auth.login(request, user)
     openstack_auth.user.set_session_from_user(request, user)
+    return True
 
 
 def get_user_home_url(user):

@@ -1,5 +1,6 @@
 from . import settings
 from . import api
+from . import sso
 from . import model
 from . import usage
 from . import get_control_panel_module
@@ -70,10 +71,15 @@ def sso_api_handler(request):
 @web_handler_decorator
 def sso_api_login_handler(request, mark):
     params = request.REQUEST
-    cookies = api.tenant_sso_login_by_mark(request, mark)
+    try:
+        auth_data = api.tenant_sso_login_by_mark(request, mark)
+    except sso.SsoException as e:
+        return HttpResponseRedirect(get_control_panel_module().get_user_home_url(request.user))
+    if not auth_data["auth_success"]:
+        return render(request, '_account_disabled_by_billing.html', auth_data)
     payload = params['payload'] if 'payload' in params else get_control_panel_module().get_user_home_url(request.user)
     response = HttpResponseRedirect(payload)
-    for k, v in cookies.items():
+    for k, v in auth_data.items():
         response.set_cookie(k, v, expires="Mon, 18-Jan-2038 13:01:52 GMT")
     return response
 

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Account disabled" %}{% endblock %}
+{% block body_id %}splash{% endblock %}
+
+{% block content %}
+  <div class="modal login">
+    <div class="modal-header"></div>
+    <form>
+      <div class="modal-body clearfix">
+        <fieldset>
+          <div class="control-group clearfix error">
+            <span class="help-inline">
+              <p>{% trans "Unfortunately this account has been disabled due to lack of funds." %}</p>
+              <p><b>{% trans "Please refill your account to continue using cloud resources!" %}</b></p>
+            </span>
+          </div>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <a href="{{ rs_billing_url }}?action=pay" class="btn btn-primary pull-right">{% trans "Refill account" %}</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}
