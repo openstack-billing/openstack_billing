@@ -1,8 +1,8 @@
-from .. import abstract
+from . import _base
 from ... import usage
 
 
-class Meter(abstract.Meter):
+class Meter(_base.NovaBased):
 
     selectors = [
         "resource_id",
@@ -15,6 +15,8 @@ class Meter(abstract.Meter):
         return str(obj_class).startswith("instance:")
 
     def process_sample(self, sample):
+        if sample.get("event_type", "exists") == "end":
+            self.assert_resource_terminated(sample["counter_name"], sample["resource_id"])
         try:
             image_id = sample['resource_metadata']['image_meta']['base_image_ref']
         except KeyError:

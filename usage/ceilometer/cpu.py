@@ -1,12 +1,14 @@
-from .. import abstract
+from . import _base
 
 
-class Meter(abstract.Meter):
+class Meter(_base.NovaBased):
 
     selectors = ["resource_id", "counter_volume"]
     matches = "cpu"
 
     def process_sample(self, sample):
+        if sample.get("event_type", "exists") == "end":
+            self.assert_resource_terminated("cpu", sample["resource_id"])
         return {
             "obj_class": "cpu",
             "obj_key": sample['resource_id'] + ":cpu",

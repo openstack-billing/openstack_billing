@@ -31,6 +31,8 @@ class MeterSet:
         # Load all meters.
         pkg = sys.modules[pkg_name]
         for _, name, _ in pkgutil.iter_modules(pkg.__path__):
+            if name.startswith('_'):
+                continue
             name = pkg.__name__ + "." + name
             __import__(name)
             meter = sys.modules[name].Meter()
@@ -53,7 +55,7 @@ class MeterSet:
         # Group samples by meters to call their precache() methods.
         # Also filter samples which belong to wrong projects and have no meters.
         samples_by_meter = {}
-        meters_my_sample = {}
+        meters_by_sample = {}
         filtered_samples = []
         for sample in samples:
             if self.get_sample_project_id(sample) not in self.tenant_key_by_project_id:
@@ -64,7 +66,7 @@ class MeterSet:
             if id(meter) not in samples_by_meter:
                 samples_by_meter[id(meter)] = []
             samples_by_meter[id(meter)].append(sample)
-            meters_my_sample[id(sample)] = meter
+            meters_by_sample[id(sample)] = meter
             filtered_samples.append(sample)
 
         # Call meter precachers.
@@ -73,7 +75,8 @@ class MeterSet:
 
         # Call meter processors and return results.
         for sample in filtered_samples:
-            processed = meters_my_sample[id(sample)].process_sample(sample)
+            sample_meter = meters_by_sample[id(sample)]
+            processed = sample_meter.process_sample(sample)
             if processed is not None:
                 processed['tenant_key'] = self.tenant_key_by_project_id[self.get_sample_project_id(sample)]
                 yield sample, processed
