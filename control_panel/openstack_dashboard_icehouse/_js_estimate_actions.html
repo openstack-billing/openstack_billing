@@ -6,12 +6,6 @@
             showEstimation: function($form, $html) {
                 $form.find('div.quota-dynamic').before($html);
             }
-        },
-        '{% url "horizon:project:volumes:volumes:create" %}': {
-            resource: 'volume',
-            showEstimation: function($form, $html) {
-                $form.find('div.quota-dynamic').append($html);
-            }
         }
     };
 </script>
