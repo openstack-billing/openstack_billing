@@ -65,7 +65,7 @@ def usage_fetch(stamp_start, stamp_end):
             yield sample
 
     def record_resource_activity(row, sample):
-        if sample.get("event_type") == "end":
+        if sample.get("event_type") == "end" or not row.get("track_activity"):
             return
         # Prepare meter to be used as "end" sample
         sample.pop("_id")

@@ -14,4 +14,5 @@ class Meter(_base.NovaBased):
             "obj_key": sample['resource_id'] + ":cpu",
             "owner_key": str(sample['resource_id']),
             "volume": float(sample.get("counter_volume", None)) / 1000000000,  # ns -> s
+            "track_activity": True
         }

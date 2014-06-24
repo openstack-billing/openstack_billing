@@ -29,4 +29,5 @@ class Meter(_base.NovaBased):
             "obj_key": str(sample['resource_id']),
             "owner_key": "",
             "volume": 1,
+            "track_activity": True
         }
