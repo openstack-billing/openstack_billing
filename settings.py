@@ -17,7 +17,8 @@ USAGE_RESOURCE_MAX_INACTIVITY = 600 * 2 + 100  # two ceilometer polls plus minor
 ESTIMATION_TIMEOUT = 10
 ESTIMATION_MAX_SUB_VOLUME = 100
 ESTIMATION_DEFAULT_CPU_VOLUME = 3600
-ESTIMATION_DEFAULT_INSTANCE_VOLUME = 6   # 1 per each 10 minute = 6 per hour
+ESTIMATION_DEFAULT_INSTANCE_VOLUME = 6   # 1 per each 10 minutes = 6 per hour
+ESTIMATION_VOLUME_VOLUME_MULTIPLIER = 6  # one event with volume-size volume per 10 minutes
 
 #
 # Read defaults from ceilometer.conf.

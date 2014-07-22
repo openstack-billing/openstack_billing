@@ -126,7 +126,7 @@ class Estimator:
             'obj_key':    model.get_rnd_pass(),
             'event_type': "start",
             'timestamp':  int(time.time()),
-            'volume':     volume,
+            'volume':     volume * settings.ESTIMATION_VOLUME_VOLUME_MULTIPLIER,
             'owner_key':  '',
             'tenant_key': self.tenant_key,
         })
