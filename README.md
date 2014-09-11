@@ -3,7 +3,7 @@ OpenStack Dashboard Billing Integration Plug-in
 
 This is an OpenStack Dashboard plug-in that provides a way to integrate third-party billing solution to your OpenStack deployment.
 
-The plug-in was originally developed by Velvica inc. to integrate Velvica Billing and Management Platform
+The plug-in was originally developed by Velvica Inc. to integrate Velvica Billing and Management Platform
 with OpenStack Horizon and Ceilometer. The plug-in can be extended to support custom OpenStack Dashboard implementations as well.
 
 Installation
@@ -31,10 +31,10 @@ Installation
 4. Create the file `/etc/openstack_billing/local_settings` and configure options in it:
 
    ```python
-   SECRET = "secret_string_to_control_access_to_api_endpoints"
+   SECRET = "paste here a secret string from Velvica's service edit form"
+   TOP_IFRAME_URL = "http://billing_dashboard_domain/header/"
    KEYSTONE_AUTH_URL = "http://keystone_ip_address:and_port/v2.0"
    KEYSTONE_ADMIN_USER = "admin"
-   KEYSTONE_ADMIN_PASSWORD = "qwerty"
-   TOP_IFRAME_URL = "http://billing_account_info_widget_url/"
+   KEYSTONE_ADMIN_PASSWORD = "admin's password"
    CONTROL_PANEL = "openstack_dashboard_icehouse"
    ```
