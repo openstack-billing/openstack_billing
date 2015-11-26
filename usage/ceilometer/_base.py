@@ -1,4 +1,4 @@
-from novaclient.openstack.common.apiclient.exceptions import NotFound
+from novaclient.exceptions import NotFound
 from novaclient.v1_1 import client
 
 from .. import abstract

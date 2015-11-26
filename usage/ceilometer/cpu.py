@@ -15,7 +15,7 @@ class Meter(_base.NovaBased):
         db = conn[pymongo.uri_parser.parse_uri(settings.CEILOMETER_DSN)['database']]
         db.meter.ensure_index([("timestamp", 1), ("_id", 1)])
         prev_meter = db.meter.find({"timestamp":  {"$lt": sample['timestamp']}, "resource_id": sample['resource_id'], "counter_name": "cpu"}).sort([("timestamp", -1)]).limit(1)
-        prev_volume = 20
+        prev_volume = 0
         for prev_sample in prev_meter:
             prev_volume = float(prev_sample.get("counter_volume", None))
         
@@ -24,5 +24,6 @@ class Meter(_base.NovaBased):
             "obj_key": sample['resource_id'] + ":cpu",
             "owner_key": str(sample['resource_id']),
             "volume": (float(sample.get("counter_volume", None)) - prev_volume) / 1000000000,  # ns -> s
-            "track_activity": True
+            "track_activity": sample.get("track_activity", True),
+            "delta": 120
         }
