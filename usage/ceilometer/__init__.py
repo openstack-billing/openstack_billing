@@ -45,7 +45,7 @@ def usage_fetch(stamp_start, stamp_end):
         selectors[v] = 1
     # In MongoDB _id has timestamp at its front so we can sort by this value
     db.meter.ensure_index([("timestamp", 1), ("_id", 1)])
-    ceilometer_cursor = db.meter.find({"timestamp": tsquery}, selectors).sort([("timestamp", 1), ("_id", 1)])
+    ceilometer_cursor = db.meter.find({"timestamp": tsquery, "resource_metadata.status": "active"}, selectors).sort([("timestamp", 1), ("_id", 1)])
 
     # Try to find terminated resources
     # We are maintaining and using collection called `resource_last_meter` in ceilometer db where
@@ -94,12 +94,6 @@ def usage_fetch(stamp_start, stamp_end):
     fetch_start_time = time.time()
     yielded_count = iteration_no = 0
     chunk = []
-
-#    for cursor in [inactive_resource_cursor()]:
-#        for sample in cursor:
-#            chunk.append(sample)
-#    raise Exception(chunk);
-
 
     for cursor in [inactive_resource_cursor(), ceilometer_cursor]:
         for sample in cursor:

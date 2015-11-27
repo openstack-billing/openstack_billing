@@ -25,5 +25,5 @@ class Meter(_base.NovaBased):
             "owner_key": str(sample['resource_id']),
             "volume": (float(sample.get("counter_volume", None)) - prev_volume) / 1000000000,  # ns -> s
             "track_activity": sample.get("track_activity", True),
-            "delta": 120
+            "delta": 3600
         }
