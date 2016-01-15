@@ -8,8 +8,8 @@ class Meter(_base.NovaBased):
     matches = "cpu"
 
     def process_sample(self, sample):
-        if sample.get("event_type", "exists") == "end":
-            self.assert_resource_terminated("cpu", sample["resource_id"])
+        #if sample.get("event_type", "exists") == "end":
+        #    self.assert_resource_terminated("cpu", sample["resource_id"])
 
         conn = pymongo.mongo_client.MongoClient(settings.CEILOMETER_DSN)
         db = conn[pymongo.uri_parser.parse_uri(settings.CEILOMETER_DSN)['database']]
