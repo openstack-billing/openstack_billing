@@ -17,7 +17,7 @@ class Estimator(Estimator):
 
     def _estimate_instance(self):
         params = self.request.REQUEST
-        flavor = nova.flavor_get(self.request, int(params['flavor']))
+        flavor = nova.flavor_get(self.request, params['flavor'])
         return self.estimator.estimate_instance(
             flavor_name=flavor.name,
             image_id=(params['image_id'] if params.get('source_type', '').endswith('image_id') else None),
