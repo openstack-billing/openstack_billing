@@ -45,7 +45,7 @@ def usage_fetch(stamp_start, stamp_end):
         selectors[v] = 1
     # In MongoDB _id has timestamp at its front so we can sort by this value
     db.meter.ensure_index([("timestamp", 1), ("_id", 1)])
-    ceilometer_cursor = db.meter.find({"timestamp": tsquery}, selectors).sort([("timestamp", 1), ("_id", 1)])
+    ceilometer_cursor = db.meter.find({"timestamp": tsquery, "resource_metadata.status": "active", "resource_metadata.image": {"$ne": None}}, selectors).sort([("timestamp", 1), ("_id", 1)])
 
     # Try to find terminated resources
     # We are maintaining and using collection called `resource_last_meter` in ceilometer db where
@@ -56,7 +56,7 @@ def usage_fetch(stamp_start, stamp_end):
     db.resource_last_meter.ensure_index([("timestamp", 1)])
     db.resource_last_meter.ensure_index([("obj_key", 1)], unique=True)
     tsquery = {"$gte": time_start - inactivity_delta, "$lte": time_end - inactivity_delta}
-
+    #raise Exception(tsquery)
     def inactive_resource_cursor():
         cursor = db.resource_last_meter.find({"timestamp": tsquery})
         for sample in cursor:
@@ -65,16 +65,22 @@ def usage_fetch(stamp_start, stamp_end):
             yield sample
 
     def record_resource_activity(row, sample):
-        if sample.get("event_type") == "end" or not row.get("track_activity"):
-            return
+        if sample.get("event_type") == "end":
+            row["event_type"] = sample["event_type"]
+            return row
         # Prepare meter to be used as "end" sample
         sample.pop("_id")
         sample["obj_key"] = row["obj_key"]
-        sample["event_type"] = "end"
+        sample["event_type"] = "end" if not row.get("track_activity") else "exists"
+        row["event_type"] = sample["event_type"]
+        sample["track_activity"] = False
+        sample["timestamp"] += datetime.timedelta(seconds=row['delta'])
+        sample["delta"] = row['delta']
         try:
-            db.resource_last_meter.update({"obj_key": sample["obj_key"], "timestamp": {"$lt": sample["timestamp"]}}, sample, True)
+            db.resource_last_meter.update({"obj_key": sample["obj_key"], "timestamp": {"$lte": sample["timestamp"]}}, sample, True)
         except DuplicateKeyError as e:
             pass
+        return row
 
     # ATTENTION! We do not use cursor.limit() here, because we do not know it
     # before filtering by billing-related project_id. We MUST return at least
@@ -88,6 +94,7 @@ def usage_fetch(stamp_start, stamp_end):
     fetch_start_time = time.time()
     yielded_count = iteration_no = 0
     chunk = []
+
     for cursor in [inactive_resource_cursor(), ceilometer_cursor]:
         for sample in cursor:
             iteration_no += 1
@@ -96,13 +103,13 @@ def usage_fetch(stamp_start, stamp_end):
             chunk.append(sample)
             if len(chunk) > settings.USAGE_API_CHUNK_SIZE:
                 for result_row, sample in _process_samples_chunk(meter_set, chunk):
-                    record_resource_activity(result_row, sample)
+                    result_row = record_resource_activity(result_row, sample)
                     yield result_row
                     yielded_count += 1
                 chunk = []
     if len(chunk) > 0:
         for result_row, sample in _process_samples_chunk(meter_set, chunk):
-            record_resource_activity(result_row, sample)
+            result_row = record_resource_activity(result_row, sample)
             yield result_row
 
     conn.close()

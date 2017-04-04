@@ -13,6 +13,7 @@ class Meter(abstract.Meter):
             "obj_key": sample['resource_id'] + ":volume",
             "owner_key": None,
             "volume": int(sample["counter_volume"]) if not is_end else 0,
-            "event_type": "end" if is_end else "exists"
+            "event_type": "end" if is_end else "exists",
+            "delta": 60
         }
 

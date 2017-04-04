@@ -27,6 +27,12 @@ def django_install_hooks(caller_module_name):
     # on a very early stage (in settings.py).
     caller = sys.modules[caller_module_name]
 
+    if hasattr(caller, "LOGIN_REDIRECT_URL"):
+        caller.LOGIN_REDIRECT_URL = '/'
+
+    if hasattr(caller, "TEMPLATE_LOADERS") and 'django.template.loaders.filesystem.Loader' not in caller.TEMPLATE_LOADERS:
+        caller.TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader', ) + caller.TEMPLATE_LOADERS
+
     if hasattr(caller, "TEMPLATE_DIRS"):
         # Build path manually, do not use get_control_panel_module() here
         # because it initializes lots of libraries. These libraries may expect

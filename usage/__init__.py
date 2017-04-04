@@ -74,7 +74,7 @@ class Estimator:
             error_text = re.sub(r'(?m)^', '# ', error_text)
             raise EstimatorException("Estimator returned the following error:\n%s" % error_text)
         except Exception, e:
-            _log("*** Response - ERROR:\n%s" % str(e))
+            _log("*** Response - ERROR:\n%s" % repr(e))
             raise
 
     def estimate_instance(self, flavor_name, image_id, count):
