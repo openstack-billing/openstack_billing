@@ -5,7 +5,7 @@
   {% rs_top_iframe_url as iframe_url %}
   {% if iframe_url %}
     <iframe scrolling="no" height="30" frameborder="no"
-     style="float:left; border:0; padding:0; margin:0; width: 700px; background: transparent;"
+     style="float:left; border:0; padding:0; margin:0; width: 750px; background: transparent;"
      src="{{ iframe_url }}" id="top_menu"></iframe>
   {% else %}
     <span>{% blocktrans with username=request.user.username %}Logged in as: {{ username }}{% endblocktrans %}</span>
