@@ -1,5 +1,9 @@
-from novaclient.exceptions import NotFound
 from novaclient.v1_1 import client
+from novaclient.exceptions import NotFound as NotFoundDevStack
+try:
+    from novaclient.openstack.common.apiclient.exceptions import NotFound as NotFoundOpenStack
+except ImportError:
+    class NotFoundOpenStack(NotFoundDevStack): pass
 
 from .. import abstract
 from ... import settings
@@ -20,7 +24,7 @@ class NovaBased(abstract.Meter):
         try:
             self.api.servers.get(resource_id)
             terminated = False
-        except NotFound as e:
+        except (NotFoundDevStack, NotFoundOpenStack):
             terminated = True
         if not terminated:
             raise Exception((
