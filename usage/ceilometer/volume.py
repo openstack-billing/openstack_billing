@@ -16,4 +16,3 @@ class Meter(abstract.Meter):
             "event_type": "end" if is_end else "exists",
             "delta": 60
         }
-

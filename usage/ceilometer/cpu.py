@@ -3,7 +3,6 @@ import pymongo
 from ... import settings
 
 class Meter(_base.NovaBased):
-
     selectors = ["resource_id", "counter_volume"]
     matches = "cpu"
 
@@ -18,7 +17,7 @@ class Meter(_base.NovaBased):
         prev_volume = 0
         for prev_sample in prev_meter:
             prev_volume = float(prev_sample.get("counter_volume", None))
-        
+
         return {
             "obj_class": "cpu",
             "obj_key": sample['resource_id'] + ":cpu",

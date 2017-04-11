@@ -8,7 +8,6 @@ from .. import abstract
 
 
 class MeterSet(abstract.MeterSet):
-
     def __init__(self):
         self.tenant_key_by_project_id = {}
         abstract.MeterSet.__init__(self, __name__)
@@ -56,7 +55,7 @@ def usage_fetch(stamp_start, stamp_end):
     db.resource_last_meter.ensure_index([("timestamp", 1)])
     db.resource_last_meter.ensure_index([("obj_key", 1)], unique=True)
     tsquery = {"$gte": time_start - inactivity_delta, "$lte": time_end - inactivity_delta}
-    #raise Exception(tsquery)
+
     def inactive_resource_cursor():
         cursor = db.resource_last_meter.find({"timestamp": tsquery})
         for sample in cursor:
