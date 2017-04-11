@@ -2,6 +2,7 @@
 SECRET = None
 KEYSTONE_AUTH_URL = None
 KEYSTONE_ADMIN_PASSWORD = None
+KEYSTONE_ADMIN_TENANT_NAME = None
 TOP_IFRAME_URL = None  # TODO: deduce from billing_url etc.
 CONTROL_PANEL = "openstack_dashboard"  # TODO: try to deduce
 

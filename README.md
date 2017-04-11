@@ -36,5 +36,6 @@ Installation
    KEYSTONE_AUTH_URL = "http://keystone_ip_address:and_port/v2.0"
    KEYSTONE_ADMIN_USER = "admin"
    KEYSTONE_ADMIN_PASSWORD = "admin's password"
+   KEYSTONE_ADMIN_TENANT_NAME = "admin"
    CONTROL_PANEL = "openstack_dashboard_icehouse"
    ```

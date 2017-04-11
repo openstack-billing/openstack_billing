@@ -13,11 +13,11 @@ class NovaBased(abstract.Meter):
 
     def __init__(self):
         self.api = client.Client(
-            settings.KEYSTONE_ADMIN_USER,
-            settings.KEYSTONE_ADMIN_PASSWORD,
-            settings.KEYSTONE_ADMIN_USER,
-            settings.KEYSTONE_AUTH_URL,
-            service_type="compute"
+            username=settings.KEYSTONE_ADMIN_USER,
+            api_key=settings.KEYSTONE_ADMIN_PASSWORD,
+            project_id=settings.KEYSTONE_ADMIN_TENANT_NAME,
+            auth_url=settings.KEYSTONE_AUTH_URL,
+            service_type='compute'
         )
 
     def assert_resource_terminated(self, resource_class, resource_id):

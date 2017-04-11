@@ -8,7 +8,7 @@ from . import settings
 
 keystone = client.Client(
     username=settings.KEYSTONE_ADMIN_USER,
-    tenant_name=settings.KEYSTONE_ADMIN_USER,
+    tenant_name=settings.KEYSTONE_ADMIN_TENANT_NAME,
     password=settings.KEYSTONE_ADMIN_PASSWORD,
     auth_url=settings.KEYSTONE_AUTH_URL
 )
